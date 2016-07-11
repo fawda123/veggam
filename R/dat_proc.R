@@ -47,6 +47,7 @@ veg_rch <- rename(keys, scientific_name = orig) %>%
 save(veg_rch, file = 'data/veg_rch.RData', compress = 'xz')
 
 
+
 # # all lake utm coordinates in MN, zone 15N
 # lk_locs <- foreign::read.dbf('ignore/10k_pts.dbf') %>% 
 #   select(MAIN_DOW, UTM_X, UTM_Y) %>% 

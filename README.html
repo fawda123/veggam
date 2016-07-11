@@ -128,6 +128,31 @@ $(document).ready(function () {
 <li><code>veg_rch.RData</code> Summarized vegetation richness data from veg_dat, includes total richness (<code>richtot</code>), submersed species richness (<code>richsub</code>), presence/absence of coontail (as 1/0, <code>cd_pres</code>), presence/absence of curly-leaf (<code>pc_pres</code>), presence/absence of milfoil (<code>ms_pres</code>). Scientific names were manually verified during processing to remove duplicates (all species had scientific names except ‘filamentous algae’, ‘planktonic algae’, and ‘Fern group’, these were removed - 2642 records out of 894920 ~0.3% of total)</li>
 </ul>
 </div>
+<div id="model-examples" class="section level3">
+<h3>Model examples</h3>
+<pre class="r"><code>library(mgcv)
+data(veg_rch)
+
+# add covariate data
+covdat &lt;- read.table('ignore/MNDNRwatersheds.txt', sep = ',', header = T)
+
+dat &lt;- mutate(veg_rch, DOWNUM = as.integer(gsub('[0-9][0-9]$', '', dow))) %&gt;% 
+  left_join(., covdat, by = 'DOWNUM') %&gt;% 
+  select(dow, date, richtot, richsub, cd_pres, pc_pres, ms_pres, richnat, depthft, LKACRES, MeanTotalP, secchi, alkalinity) %&gt;% 
+  # unite('facs', cd_pres, pc_pres, ms_pres, sep = '') %&gt;% 
+  unite('facs', pc_pres, ms_pres, sep = '') %&gt;% 
+  mutate(facs = factor(facs, 
+    levels = c('00', '10', '01', '11'), 
+    labels = c('none', 'pc', 'ms', 'all')
+    # labels = c('none', 'cd', 'pc', 'ms', 'cd, pc', 'pc, ms', 'cd, ms', 'all')
+    )
+  )
+
+tmp2 &lt;- gam(log(1 + richnat) ~ te(log(LKACRES), log(1 + MeanTotalP), by = facs, bs = c(&quot;tp&quot;, &quot;tp&quot;)), data = dat)
+tmp1 &lt;- gam(log(1 + richnat) ~ te(log(LKACRES), log(1 + MeanTotalP), bs = c(&quot;tp&quot;, &quot;tp&quot;)), data = dat)
+# select one survey date per lake, or use gamm
+# setup logit model for individual species</code></pre>
+</div>
 <div id="to-do" class="section level3">
 <h3>To Do</h3>
 <ul>
