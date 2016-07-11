@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Marcus W. Beck, beck.marcus@epa.gov" />
+<meta name="author" content="Marcus W. Beck, beck.marcus@epa.gov, Janne Alahuhta, Janne.Alahuhta@oulu.fi" />
 
 
 <title>README</title>
@@ -116,13 +116,17 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">README</h1>
-<h4 class="author"><em>Marcus W. Beck, <a href="mailto:beck.marcus@epa.gov">beck.marcus@epa.gov</a></em></h4>
+<h4 class="author"><em>Marcus W. Beck, <a href="mailto:beck.marcus@epa.gov">beck.marcus@epa.gov</a>, Janne Alahuhta, <a href="mailto:Janne.Alahuhta@oulu.fi">Janne.Alahuhta@oulu.fi</a></em></h4>
 
 </div>
 
 
 <div id="files" class="section level3">
 <h3>Files</h3>
+<ul>
+<li><code>veg_dat.RData</code> DNR vegetation transect data from 1992 to 2014, created in <code>fishveg.RProj</code>, combination of nrri processed data, current transect data, and gaps filled with another file</li>
+<li><code>veg_rch.RData</code> Summarized vegetation richness data from veg_dat, includes total richness (<code>richtot</code>), submersed species richness (<code>richsub</code>), presence/absence of coontail (as 1/0, <code>cd_pres</code>), presence/absence of curly-leaf (<code>pc_pres</code>), presence/absence of milfoil (<code>ms_pres</code>). Scientific names were manually verified during processing to remove duplicates (all species had scientific names except ‘filamentous algae’, ‘planktonic algae’, and ‘Fern group’, these were removed - 2642 records out of 894920 ~0.3% of total)</li>
+</ul>
 </div>
 <div id="to-do" class="section level3">
 <h3>To Do</h3>
