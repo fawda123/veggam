@@ -8,10 +8,72 @@ author: "Marcus W. Beck, beck.marcus@epa.gov, Janne Alahuhta, Janne.Alahuhta@oul
 
 ### Files
 
+* `ecoregs.RData` SpatialPolygonsDataFrame for MN ecoregions
+* `mncounties.RData` SpatialPolygonsDataFrame for MN counties
+* `mnstate.RData` SpatialPolygonsDataFrame for state outline
 * `veg_dat.RData` DNR vegetation transect data from 1992 to 2014, created in `fishveg.RProj`, combination of nrri processed data, current transect data, and gaps filled with another file
-* `veg_rch.RData` Summarized vegetation richness data from veg_dat, includes total richness (`richtot`), submersed species richness (`richsub`), presence/absence of coontail (as 1/0, `cd_pres`), presence/absence of curly-leaf (`pc_pres`), presence/absence of milfoil (`ms_pres`). Scientific names were manually verified during processing to remove duplicates (all species had scientific names except 'filamentous algae', 'planktonic algae', and 'Fern group', these were removed - 2642 records out of 894920 ~0.3% of total)
+* `veg_rch.RData` Summarized vegetation richness data from veg_dat, includes total richness (`richtot`), submersed species richness (`richsub`), presence/absence of coontail (as 1/0, `cd_pres`), presence/absence of curly-leaf (`pc_pres`), presence/absence of milfoil (`ms_pres`), and richness of native submersed species (`richnat`). Scientific names were manually verified during processing to remove duplicates (all species had scientific names except 'filamentous algae', 'planktonic algae', and 'Fern group', these were removed - 2642 records out of 894920 ~0.3% of total)
 
 ### Model examples
+
+#### Exploratory analysis
+
+```{r fig.height = 6, fig.width = 12, echo = F, fig.cap = 'CPUE (mean kg per unit effort) of fish surveyed in lakes by Minnesota DNR, 1992 to through 2012.  Lakes shown are those with a vegetation survey in the same year. GN: gillnet, TN: trapnet.  Includes all size classes.', message = F, cache = T}
+library(ggplot2)
+library(maptools)
+library(gridExtra)
+
+# raw veg
+data(veg_rch)
+
+# ecoregion data for plots
+ecoregs <- readShapeSpatial('ignore/MN_eco_keep.shp')
+ecoregs <- fortify(ecoregs)
+ecoregs <- ecoregs[ecoregs$id %in% c(2, 3, 4), ]
+ecoregs$Ecoregion <- factor(ecoregs$id, levels = c(2, 3, 4), 
+  labels = c("NF", "ETF", "GP"))
+
+toplo <- dat
+
+# base ecoregion map
+pbase <- ggplot(ecoregs, aes(x = long, y = lat)) + 
+  geom_polygon(aes(x = long, y = lat, group = group, fill= Ecoregion), alpha = 0.5) +
+  theme_classic() + 
+  theme(axis.line=element_blank(),axis.text.x=element_blank(),
+          axis.text.y=element_blank(),axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),plot.background=element_blank(), 
+          legend.box.just = 'right'
+    ) +
+  coord_equal()
+
+cols <- RColorBrewer::brewer.pal(9, 'Greys')[5:9]
+ylabs <- c('Submersed\nrichness')
+p1 <- pbase + 
+  geom_point(data = toplo, aes(x = utmx, y = utmy, color = richsub, size = richsub), alpha = 0.8) +
+  scale_size(range = c(1, 6)) + 
+  scale_colour_gradientn(colours = cols) +
+  guides(
+    colour = guide_legend(title = ylabs), 
+    size = guide_legend(title = ylabs)
+    )
+
+pbase + 
+  geom_point(data = toplo, aes(x = utmx, y = utmy, shape = Invasive, colour = Invasive), alpha = 0.8, size = 2) +
+  scale_shape_manual(values = c(15, 16, 17, 18))
+
+
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, ncol = 2)
+grid.arrange(p5, p6, ncol = 2)
+grid.arrange(p7, ncol = 2)
+```
+
+
+
+
 
 ```{r eval = F}
 library(mgcv)
