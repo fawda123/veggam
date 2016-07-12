@@ -36,9 +36,12 @@ veg_rch <- rename(keys, scientific_name = orig) %>%
   summarise(
     richtot = length(unique(sp)), 
     richsub = sum(growth_form %in% 'S'),
-    pc_pres = ifelse('Potamogeton crispus' %in% sp, 1, 0),
-    ms_pres = ifelse('Myriophyllum spicatum' %in% sp, 1, 0),
-    richnat = richsub - sum(pc_pres, ms_pres)
+    pc = ifelse('Potamogeton crispus' %in% sp, 1, 0),
+    ms = ifelse('Myriophyllum spicatum' %in% sp, 1, 0),
+    pa = ifelse('Potamogeton amplifolius' %in% sp, 1, 0), 
+    cd = ifelse('Ceratophyllum demersum' %in% sp, 1, 0), 
+    va = ifelse('Vallisneria americana' %in% sp, 1, 0),
+    richnat = richsub - sum(pc, ms)
     ) %>% 
   ungroup
 
@@ -63,13 +66,24 @@ veg_rch <- mutate(veg_rch, dowjn = gsub('[0-9][0-9]$', '00', dow)) %>%
 covdat <- read.table('ignore/MNDNRwatersheds.txt', sep = ',', header = T)
 veg_rch <- mutate(veg_rch, DOWNUM = as.integer(gsub('[0-9][0-9]$', '', dow))) %>% 
   left_join(., covdat, by = 'DOWNUM') %>% 
-  select(dow, date, richtot, richsub, pc_pres, ms_pres, richnat, depthft, LKACRES, MeanTotalP, secchi, alkalinity, utmx, utmy) %>% 
-  unite('facs', pc_pres, ms_pres, sep = '') %>% 
-  mutate(Invasive = factor(facs, 
-    levels = c('00', '10', '01', '11'), 
-    labels = c('none', 'pc', 'ms', 'all')
-    )
-  )
+  select(dow, date, richtot, richsub, pc, ms, pa, cd, va, richnat, depthft, LKACRES, MeanTotalP, secchi, alkalinity, utmx, utmy) %>% 
+  unite('facs', pc, ms, sep = '', remove = F) %>% 
+  mutate(
+    Invasive = factor(facs, 
+      levels = c('00', '10', '01', '11'), 
+      labels = c('none', 'pc', 'ms', 'both')
+      ),
+    depthft = depthft * 0.3048, # m
+    LKACRES = LKACRES * 0.00404686, # km2 
+    secchi = secchi * 0.3048 # m
+  ) %>% 
+  rename(
+    depthm = depthft, 
+    areakm = LKACRES,
+    secchim = secchi, 
+    totalp = MeanTotalP
+  ) %>% 
+  select(-facs)
 
 # get ecoregions
 # lakes as spatialpointsdataframe for overlay
@@ -104,3 +118,6 @@ ecoreg <- over(veg_rch_pts, ecoregs) %>%
 veg_rch <- left_join(veg_rch, ecoreg, by = 'dow')
 
 save(veg_rch, file = 'data/veg_rch.RData', compress = 'xz')
+
+######
+
