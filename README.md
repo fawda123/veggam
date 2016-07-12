@@ -3,10 +3,21 @@ Marcus W. Beck, beck.marcus@epa.gov, Janne Alahuhta, Janne.Alahuhta@oulu.fi
 
 ### Files
 
+* `ecoregs.RData` SpatialPolygonsDataFrame for MN ecoregions
+* `mncounties.RData` SpatialPolygonsDataFrame for MN counties
+* `mnstate.RData` SpatialPolygonsDataFrame for state outline
 * `veg_dat.RData` DNR vegetation transect data from 1992 to 2014, created in `fishveg.RProj`, combination of nrri processed data, current transect data, and gaps filled with another file
 * `veg_rch.RData` Summarized vegetation richness data from veg_dat, includes total richness (`richtot`), submersed species richness (`richsub`), presence/absence of coontail (as 1/0, `cd_pres`), presence/absence of curly-leaf (`pc_pres`), presence/absence of milfoil (`ms_pres`), and richness of native submersed species (`richnat`). Scientific names were manually verified during processing to remove duplicates (all species had scientific names except 'filamentous algae', 'planktonic algae', and 'Fern group', these were removed - 2642 records out of 894920 ~0.3% of total)
 
 ### Model examples
+
+#### Exploratory analysis
+
+Maps showing speices richness of pecies richness of submersed macrophytes from MNDNR transect database (top) and presence/absence of the invasives M. spicatum and P. crispus (bottom).
+![Species richness of submersed macrophytes from MNDNR transect database.](README_files/figure-html/unnamed-chunk-1-1.png)
+![Distribuion of lakes with P. crispus, M. spicatum, both, or none.](README_files/figure-html/unnamed-chunk-2-1.png)
+
+
 
 
 ```r

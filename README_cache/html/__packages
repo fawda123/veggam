@@ -1,0 +1,7 @@
+base
+ggplot2
+sp
+maptools
+gridExtra
+RColorBrewer
+dplyr
