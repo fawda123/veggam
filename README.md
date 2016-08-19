@@ -23,6 +23,14 @@ All files available [here](https://github.com/fawda123/veggam/tree/master/data)
 * `veg_dat.RData` DNR vegetation transect data from 1992 to 2014, created in `fishveg.RProj`, combination of nrri processed data, current transect data, and gaps filled with another file
 * `veg_rch.RData` Summarized vegetation richness data from veg_dat, includes total richness (`richtot`), submersed species richness (`richsub`), presence/absence of different species (as 1/0), richness of native submersed species (`richnat`), covariates, and categorical describing occurrence of p. crispus and m. spicatum (none, either, or both). Scientific names were manually verified during processing to remove duplicates (all species had scientific names except 'filamentous algae', 'planktonic algae', and 'Fern group', these were removed - 2642 records out of 894920 ~0.3% of total)
 
+### Analysis objective and questions
+
+Little is known about the interactive and potentially non-linear effects of invasive aquatic macrophytes on native species at a regional scale.  Individual species or community response to increasing abundance of non-native species may not be uniform across lakes or well-characterized by conventional statistical models.  Using a large dataset of vegetation surveys in midwest glacial lakes, we evaluated the response of native aquatic macrophytes to presence/absence of eurasian milfoil and curly-leaf pondweed using generalized additive models with tensor product smoothing surfaces.  These models were used to describe the effects of invasive species presence/absence on submersed species richness and probability occurrence of individual species following an initial screen process with simpler models.  The tensor product smoothing surfaces allowed us to better characterize effects of invasive species by estimating and isolating interactive effects of other lake variables known to influence macrophyte distribution patterns.  Additional analyses were conducted on a smaller subset of lakes with more comprehensive surveys to better characterize species response to invasive species.
+
+Step 1: Initial screening of species response to p/a invasive
+Step 2: Detailed modeling of selected species response to p/a invasive
+Step 3: Detailed modeling of selected species response to p/a invasive, PI surveys
+
 ### Species maps
 
 Maps showing species richness of submersed macrophytes from MNDNR transect database (top) and presence/absence of the invasives M. spicatum and P. crispus (bottom).
@@ -72,7 +80,7 @@ vis.gam(richmod, theta = theta, phi = phi, n.grid = n.grid, color = color, type 
 
 ![](README_files/figure-html/unnamed-chunk-4-4.png)<!-- -->
 
-These plots show an alternative view of the results for each explanatoory variable.
+These plots show an alternative view of the results for each explanatory variable.
 
 ```r
 # get model predictions at different levels of input data
@@ -139,7 +147,7 @@ grid.arrange(p1, p2, ncol = 2)
 
 ### Example GAM: p/a largeleaf pondweed
 
-The second model is the same as the first except p/a of largeleaf pondweed is modelled as a binomial (logit link) variable. 
+The second model is the same as the first except p/a of largeleaf pondweed is modelled as a binomial (logit link) variable.  The result shows the conditional probability of presence for largelead pondweed given depth, phosphorus, and p/a of invasives. 
 
 ```r
 data(veg_rch)
@@ -155,7 +163,6 @@ pamod <- gam(pa ~
   family = binomial(link = 'logit'),
   data = tomod
   )
-
 
 theta <- 45; phi <- 25; n.grid <- 50; color <- 'topo'; type <- 'link'; zlab <- 'Prob. of P. amplifolius'
 vis.gam(pamod, theta = theta, phi = phi, n.grid = n.grid, color = color, type = type, cond = list(Invasive = 'none'), zlab = zlab)
@@ -180,7 +187,7 @@ vis.gam(pamod, theta = theta, phi = phi, n.grid = n.grid, color = color, type = 
 ```
 
 ![](README_files/figure-html/unnamed-chunk-6-4.png)<!-- -->
-These plots show an alternative view of the results for each explanatoory variable.
+These plots show an alternative view of the results for each explanatory variable.
 
 ```r
 # get model predictions at different levels of input data

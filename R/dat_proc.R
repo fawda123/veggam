@@ -21,17 +21,22 @@ data(veg_dat)
 # dat <- select(veg_dat, dow, date, scientific_name, growth_form) %>% 
 #   unique
 # unis <- data.frame(sort(table(dat$scientific_name)))
-# write.table(unis, 'ignore/rec  s.txt', quote = F, row.names = F, sep = '\t')
+# write.table(unis, 'ignore/recs.txt', quote = F, row.names = F, sep = '\t')
 
 keys <- read.csv('ignore/recs.csv', stringsAsFactors = F)
+
+# this file was created from veg_dat, manually checked to remove inconsistent growth form entries
+# species names are those in keys that have also been checked for inconsistencies
+gros <- read.csv('ignore/growth_forms.csv', stringsAsFactors = F)
 
 # summarized veg data, modify this to include p/a for other species
 veg_rch <- rename(keys, scientific_name = orig) %>%
   select(-Freq) %>% 
   left_join(veg_dat, ., by = 'scientific_name') %>% 
-  select(dow, date, growth_form, comb) %>% 
+  select(dow, date, comb) %>% 
   unique %>% 
   rename(sp = comb) %>% 
+  left_join(., gros, by = 'sp') %>% 
   group_by(dow, date) %>% 
   summarise(
     richtot = length(unique(sp)), 
